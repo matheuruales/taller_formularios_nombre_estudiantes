@@ -2,14 +2,297 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Asistencia</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px 16px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .card-header .icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #e94560, #c62a47);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 28px;
+        }
+
+        .card-header h1 {
+            color: #ffffff;
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .card-header p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            margin-top: 6px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .field label {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+        }
+
+        .field input[type="text"],
+        .field input[type="email"],
+        .field input[type="date"],
+        .field input[type="time"],
+        .field textarea,
+        .field select {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            padding: 12px 14px;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+            outline: none;
+            width: 100%;
+        }
+
+        .field input[type="text"]:focus,
+        .field input[type="email"]:focus,
+        .field input[type="date"]:focus,
+        .field input[type="time"]:focus,
+        .field textarea:focus,
+        .field select:focus {
+            border-color: #e94560;
+            background: rgba(233, 69, 96, 0.1);
+            box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.15);
+        }
+
+        .field input::placeholder,
+        .field textarea::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Fix for date/time inputs on webkit */
+        .field input[type="date"]::-webkit-calendar-picker-indicator,
+        .field input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        .field textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Checkbox custom */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .checkbox-wrapper:hover {
+            border-color: rgba(233, 69, 96, 0.5);
+            background: rgba(233, 69, 96, 0.07);
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #e94560;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper span {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+        }
+
+        /* Error messages */
+        .field .errorlist {
+            list-style: none;
+            margin-top: 6px;
+        }
+
+        .field .errorlist li {
+            color: #ff6b6b;
+            font-size: 0.8rem;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 8px 0 28px;
+        }
+
+        .section-title {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #e94560, #c62a47);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+            margin-top: 8px;
+            box-shadow: 0 6px 20px rgba(233, 69, 96, 0.4);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(233, 69, 96, 0.55);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+            opacity: 0.9;
+        }
+
+        @media (max-width: 520px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 32px 24px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Registro de Asistencia</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Registrar</button>
-    </form>
+    <div class="card">
+        <div class="card-header">
+            <div class="icon">📋</div>
+            <h1>Registro de Asistencia</h1>
+            <p>Completa todos los campos para registrar tu asistencia</p>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <p class="section-title">Datos personales</p>
+            <div class="grid-2">
+                <div class="field full">
+                    <label for="{{ form.nombre_completo.id_for_label }}">Nombre completo</label>
+                    {{ form.nombre_completo }}
+                    {{ form.nombre_completo.errors }}
+                </div>
+                <div class="field">
+                    <label for="{{ form.documento_identidad.id_for_label }}">Documento de identidad</label>
+                    {{ form.documento_identidad }}
+                    {{ form.documento_identidad.errors }}
+                </div>
+                <div class="field">
+                    <label for="{{ form.correo_electronico.id_for_label }}">Correo electrónico</label>
+                    {{ form.correo_electronico }}
+                    {{ form.correo_electronico.errors }}
+                </div>
+            </div>
+
+            <hr class="divider">
+            <p class="section-title">Horario</p>
+            <div class="grid-2">
+                <div class="field">
+                    <label for="{{ form.fecha_asistencia.id_for_label }}">Fecha de asistencia</label>
+                    {{ form.fecha_asistencia }}
+                    {{ form.fecha_asistencia.errors }}
+                </div>
+                <div class="field"></div>
+                <div class="field">
+                    <label for="{{ form.hora_ingreso.id_for_label }}">Hora de ingreso</label>
+                    {{ form.hora_ingreso }}
+                    {{ form.hora_ingreso.errors }}
+                </div>
+                <div class="field">
+                    <label for="{{ form.hora_salida.id_for_label }}">Hora de salida</label>
+                    {{ form.hora_salida }}
+                    {{ form.hora_salida.errors }}
+                </div>
+            </div>
+
+            <hr class="divider">
+            <p class="section-title">Confirmación</p>
+            <div class="field" style="margin-bottom: 20px;">
+                <label class="checkbox-wrapper">
+                    {{ form.presente }}
+                    <span>El estudiante estuvo presente</span>
+                </label>
+                {{ form.presente.errors }}
+            </div>
+            <div class="field">
+                <label for="{{ form.observaciones.id_for_label }}">Observaciones <span style="color:rgba(255,255,255,0.3);font-weight:400;">(opcional)</span></label>
+                {{ form.observaciones }}
+                {{ form.observaciones.errors }}
+            </div>
+
+            <button type="submit" class="btn-submit">Registrar asistencia</button>
+        </form>
+    </div>
 </body>
 </html>
