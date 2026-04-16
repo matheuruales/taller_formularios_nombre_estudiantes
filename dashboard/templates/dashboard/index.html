@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Panel de Administracion</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* ---- SIDEBAR ---- */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 240px;
+      height: 100vh;
+      background: #1e293b;
+      border-right: 1px solid #334155;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0;
+      z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 0 24px 24px;
+      border-bottom: 1px solid #334155;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #38bdf8;
+      letter-spacing: -0.5px;
+    }
+    .sidebar-logo span { color: #94a3b8; font-weight: 400; font-size: 0.8rem; display: block; margin-top: 4px; }
+    .sidebar-nav { padding: 16px 0; flex: 1; }
+    .nav-label { padding: 8px 24px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #64748b; }
+    .nav-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 24px;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.15s;
+      border-left: 3px solid transparent;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: #e2e8f0;
+      background: #0f172a;
+      border-left-color: #38bdf8;
+    }
+    .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+    /* ---- MAIN CONTENT ---- */
+    .main { margin-left: 240px; padding: 32px; }
+
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 1.75rem; font-weight: 700; color: #f1f5f9; }
+    .page-header p { color: #64748b; font-size: 0.9rem; margin-top: 4px; }
+
+    /* ---- STAT CARDS ---- */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .stat-icon {
+      width: 48px; height: 48px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .stat-icon.blue  { background: rgba(56,189,248,0.15); }
+    .stat-icon.green { background: rgba(52,211,153,0.15); }
+    .stat-icon.red   { background: rgba(248,113,113,0.15); }
+    .stat-icon.purple{ background: rgba(167,139,250,0.15); }
+    .stat-value { font-size: 1.8rem; font-weight: 700; color: #f1f5f9; line-height: 1; }
+    .stat-label { font-size: 0.8rem; color: #64748b; margin-top: 4px; }
+
+    /* ---- SECTION TABS ---- */
+    .section { margin-bottom: 40px; }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 1.1rem; font-weight: 600; color: #f1f5f9;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .badge {
+      background: #334155;
+      color: #94a3b8;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .btn-add {
+      padding: 8px 16px;
+      background: #38bdf8;
+      color: #0f172a;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    .btn-add:hover { background: #7dd3fc; }
+
+    /* ---- TABLE ---- */
+    .table-wrap {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    thead tr { background: #0f172a; }
+    thead th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #64748b;
+      font-weight: 600;
+    }
+    tbody tr { border-top: 1px solid #1e293b; transition: background 0.1s; }
+    tbody tr:hover { background: #263348; }
+    td { padding: 12px 16px; color: #cbd5e1; vertical-align: middle; }
+    td.name { color: #f1f5f9; font-weight: 500; }
+
+    .pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .pill-green  { background: rgba(52,211,153,0.15); color: #34d399; }
+    .pill-red    { background: rgba(248,113,113,0.15); color: #f87171; }
+    .pill-blue   { background: rgba(56,189,248,0.15);  color: #38bdf8; }
+    .pill-purple { background: rgba(167,139,250,0.15); color: #a78bfa; }
+    .pill-orange { background: rgba(251,146,60,0.15);  color: #fb923c; }
+    .pill-gray   { background: rgba(100,116,139,0.15); color: #94a3b8; }
+
+    .empty-row td {
+      text-align: center;
+      padding: 32px;
+      color: #475569;
+    }
+
+    /* ---- TIPO MAP ---- */
+    /* chips for solicitud types */
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 900px) {
+      .sidebar { width: 64px; }
+      .sidebar-logo, .nav-label { display: none; }
+      .nav-link { padding: 12px; justify-content: center; }
+      .nav-link span { display: none; }
+      .main { margin-left: 64px; padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    Panel Admin
+    <span>Taller Django</span>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-label">Navegacion</div>
+    <a href="#asistencias" class="nav-link active">
+      <span class="nav-icon">&#128197;</span>
+      <span>Asistencias</span>
+    </a>
+    <a href="#solicitudes" class="nav-link">
+      <span class="nav-icon">&#128203;</span>
+      <span>Solicitudes</span>
+    </a>
+    <div class="nav-label" style="margin-top:16px;">Formularios</div>
+    <a href="/asistencia/" class="nav-link">
+      <span class="nav-icon">&#43;</span>
+      <span>Nueva Asistencia</span>
+    </a>
+    <a href="/solicitudes/" class="nav-link">
+      <span class="nav-icon">&#43;</span>
+      <span>Nueva Solicitud</span>
+    </a>
+    <div class="nav-label" style="margin-top:16px;">Sistema</div>
+    <a href="/admin/" class="nav-link">
+      <span class="nav-icon">&#9881;</span>
+      <span>Django Admin</span>
+    </a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <div class="page-header">
+    <h1>Panel de Administracion</h1>
+    <p>Visualizacion de registros de asistencia y solicitudes</p>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon blue">&#128197;</div>
+      <div>
+        <div class="stat-value">{{ total_asistencias }}</div>
+        <div class="stat-label">Total Asistencias</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">&#10003;</div>
+      <div>
+        <div class="stat-value">{{ total_presentes }}</div>
+        <div class="stat-label">Presentes</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon red">&#10007;</div>
+      <div>
+        <div class="stat-value">{{ total_ausentes }}</div>
+        <div class="stat-label">Ausentes</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon purple">&#128203;</div>
+      <div>
+        <div class="stat-value">{{ total_solicitudes }}</div>
+        <div class="stat-label">Total Solicitudes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLICITUDES POR TIPO -->
+  {% if total_solicitudes %}
+  <div class="stats-grid" style="margin-bottom:32px;">
+    {% for tipo, count in solicitudes_por_tipo.items %}
+    <div class="stat-card" style="padding:14px 20px;">
+      <div>
+        <div class="stat-value" style="font-size:1.4rem;">{{ count }}</div>
+        <div class="stat-label">{{ tipo }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- TABLE: ASISTENCIAS -->
+  <div class="section" id="asistencias">
+    <div class="section-header">
+      <div class="section-title">
+        &#128197; Registros de Asistencia
+        <span class="badge">{{ total_asistencias }}</span>
+      </div>
+      <a href="/asistencia/" class="btn-add">+ Nuevo registro</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre Completo</th>
+            <th>Documento</th>
+            <th>Correo</th>
+            <th>Fecha</th>
+            <th>Ingreso</th>
+            <th>Salida</th>
+            <th>Estado</th>
+            <th>Observaciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in asistencias %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td class="name">{{ a.nombre_completo }}</td>
+            <td>{{ a.documento_identidad }}</td>
+            <td>{{ a.correo_electronico }}</td>
+            <td>{{ a.fecha_asistencia }}</td>
+            <td>{{ a.hora_ingreso }}</td>
+            <td>{{ a.hora_salida }}</td>
+            <td>
+              {% if a.presente %}
+                <span class="pill pill-green">Presente</span>
+              {% else %}
+                <span class="pill pill-red">Ausente</span>
+              {% endif %}
+            </td>
+            <td>{{ a.observaciones|default:"-" }}</td>
+          </tr>
+          {% empty %}
+          <tr class="empty-row">
+            <td colspan="9">No hay registros de asistencia aun.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TABLE: SOLICITUDES -->
+  <div class="section" id="solicitudes">
+    <div class="section-header">
+      <div class="section-title">
+        &#128203; Solicitudes
+        <span class="badge">{{ total_solicitudes }}</span>
+      </div>
+      <a href="/solicitudes/" class="btn-add">+ Nueva solicitud</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Solicitante</th>
+            <th>Documento</th>
+            <th>Correo</th>
+            <th>Telefono</th>
+            <th>Tipo</th>
+            <th>Asunto</th>
+            <th>Fecha</th>
+            <th>Adjunto</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in solicitudes %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td class="name">{{ s.nombre_solicitante }}</td>
+            <td>{{ s.documento_identidad }}</td>
+            <td>{{ s.correo_electronico }}</td>
+            <td>{{ s.telefono_contacto }}</td>
+            <td>
+              {% if s.tipo_solicitud == 'academica' %}
+                <span class="pill pill-blue">Academica</span>
+              {% elif s.tipo_solicitud == 'administrativa' %}
+                <span class="pill pill-purple">Administrativa</span>
+              {% elif s.tipo_solicitud == 'tecnica' %}
+                <span class="pill pill-orange">Tecnica</span>
+              {% else %}
+                <span class="pill pill-gray">Otra</span>
+              {% endif %}
+            </td>
+            <td>{{ s.asunto }}</td>
+            <td>{{ s.fecha_solicitud }}</td>
+            <td>
+              {% if s.archivo_adjunto %}
+                <a href="{{ s.archivo_adjunto.url }}" target="_blank" style="color:#38bdf8;text-decoration:none;">Ver archivo</a>
+              {% else %}
+                -
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr class="empty-row">
+            <td colspan="9">No hay solicitudes registradas aun.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+</body>
+</html>

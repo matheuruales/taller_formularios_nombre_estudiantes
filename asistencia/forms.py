@@ -3,6 +3,8 @@ from .models import Asistencia
 
 
 class AsistenciaForm(forms.ModelForm):
+    presente = forms.BooleanField(required=False)
+
     class Meta:
         model = Asistencia
         fields = [
