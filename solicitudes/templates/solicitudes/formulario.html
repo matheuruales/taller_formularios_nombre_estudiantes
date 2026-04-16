@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Solicitud</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 50%, #0a3d62 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px 16px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 640px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .card-header .icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #3498db, #1a6fa8);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 28px;
+        }
+
+        .card-header h1 {
+            color: #ffffff;
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .card-header p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            margin-top: 6px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .field label {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+        }
+
+        .field input[type="text"],
+        .field input[type="email"],
+        .field input[type="number"],
+        .field input[type="date"],
+        .field textarea,
+        .field select {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            padding: 12px 14px;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+            outline: none;
+            width: 100%;
+        }
+
+        .field input[type="text"]:focus,
+        .field input[type="email"]:focus,
+        .field input[type="number"]:focus,
+        .field input[type="date"]:focus,
+        .field textarea:focus,
+        .field select:focus {
+            border-color: #3498db;
+            background: rgba(52, 152, 219, 0.1);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+        }
+
+        .field input::placeholder,
+        .field textarea::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .field input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        .field select option {
+            background: #1b2838;
+            color: #ffffff;
+        }
+
+        .field textarea {
+            resize: vertical;
+            min-height: 110px;
+        }
+
+        .field input[type="file"] {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px dashed rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            padding: 12px 14px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .field input[type="file"]:hover {
+            border-color: rgba(52, 152, 219, 0.6);
+            background: rgba(52, 152, 219, 0.07);
+        }
+
+        .field .errorlist {
+            list-style: none;
+            margin-top: 6px;
+        }
+
+        .field .errorlist li {
+            color: #ff6b6b;
+            font-size: 0.8rem;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 8px 0 28px;
+        }
+
+        .section-title {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #3498db, #1a6fa8);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+            margin-top: 8px;
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(52, 152, 219, 0.55);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+            opacity: 0.9;
+        }
+
+        @media (max-width: 520px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <div class="icon">📝</div>
+            <h1>Formulario de Solicitud</h1>
+            <p>Completa todos los campos para registrar tu solicitud</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            <p class="section-title">Datos del solicitante</p>
+            <div class="grid-2">
+                <div class="field full">
+                    <label for="{{ form.nombre_solicitante.id_for_label }}">Nombre del solicitante</label>
+                    {{ form.nombre_solicitante }}
+                    {{ form.nombre_solicitante.errors }}
+                </div>
+                <div class="field">
+                    <label for="{{ form.documento_identidad.id_for_label }}">Documento de identidad</label>
+                    {{ form.documento_identidad }}
+                    {{ form.documento_identidad.errors }}
+                </div>
+                <div class="field">
+                    <label for="{{ form.correo_electronico.id_for_label }}">Correo electrónico</label>
+                    {{ form.correo_electronico }}
+                    {{ form.correo_electronico.errors }}
+                </div>
+                <div class="field full">
+                    <label for="{{ form.telefono_contacto.id_for_label }}">Teléfono de contacto</label>
+                    {{ form.telefono_contacto }}
+                    {{ form.telefono_contacto.errors }}
+                </div>
+            </div>
+
+            <hr class="divider">
+            <p class="section-title">Detalles de la solicitud</p>
+            <div class="grid-2">
+                <div class="field">
+                    <label for="{{ form.tipo_solicitud.id_for_label }}">Tipo de solicitud</label>
+                    {{ form.tipo_solicitud }}
+                    {{ form.tipo_solicitud.errors }}
+                </div>
+                <div class="field">
+                    <label for="{{ form.fecha_solicitud.id_for_label }}">Fecha de la solicitud</label>
+                    {{ form.fecha_solicitud }}
+                    {{ form.fecha_solicitud.errors }}
+                </div>
+                <div class="field full">
+                    <label for="{{ form.asunto.id_for_label }}">Asunto</label>
+                    {{ form.asunto }}
+                    {{ form.asunto.errors }}
+                </div>
+                <div class="field full">
+                    <label for="{{ form.descripcion_detallada.id_for_label }}">Descripción detallada</label>
+                    {{ form.descripcion_detallada }}
+                    {{ form.descripcion_detallada.errors }}
+                </div>
+            </div>
+
+            <hr class="divider">
+            <p class="section-title">Adjuntos</p>
+            <div class="field">
+                <label for="{{ form.archivo_adjunto.id_for_label }}">
+                    Archivo adjunto <span style="color:rgba(255,255,255,0.3);font-weight:400;">(opcional)</span>
+                </label>
+                {{ form.archivo_adjunto }}
+                {{ form.archivo_adjunto.errors }}
+            </div>
+
+            <button type="submit" class="btn-submit">Enviar solicitud</button>
+        </form>
+    </div>
+</body>
+</html>
